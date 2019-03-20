@@ -1,0 +1,22 @@
+{
+  "name": "@fmtk/ts-build",
+  "version": "0.0.0",
+  "description": "Builds typescript packages",
+  "main": "index.js",
+  "license": "MIT",
+  "author": {
+    "email": "gordon.leigh@futurematik.co.uk",
+    "name": "Gordon Leigh"
+  },
+  "scripts": {
+    "bumpfeat": "npm version minor && npm publish",
+    "bumpfix": "npm version patch && npm publish",
+    "postversion": "git push --follow-tags"
+  },
+  "bin": {
+    "ts-build": "./index.js"
+  },
+  "dependencies": {
+    "typescript": "^3.3.3"
+  }
+}
