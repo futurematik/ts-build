@@ -16,7 +16,7 @@
   "bin": {
     "ts-build": "./index.js"
   },
-  "dependencies": {
-    "typescript": "^3.3.3"
+  "peerDependencies": {
+    "typescript": ">3.0.0"
   }
 }
