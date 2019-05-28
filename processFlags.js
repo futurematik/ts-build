@@ -20,7 +20,7 @@ module.exports = function processFlags(flags) {
 
   const allEnvs = [...e, ...env]
     .map(x => x.split(','))
-    .reduce((a, x) => [...a, ...x])
+    .reduce((a, x) => [...a, ...x], [])
     .reduce((a, x) => ({ ...a, [x]: process.env[x] }), {});
 
   const allDefines = [...d, ...define];
