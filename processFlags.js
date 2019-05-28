@@ -1,5 +1,5 @@
 module.exports = function processFlags(flags) {
-  let { d, define, ...other } = flags;
+  let { d, define, e, env, ...other } = flags;
 
   if (Object.keys(other).length > 0) {
     throw new Error('unknown ts-build option ' + Object.keys(other).join(', '));
@@ -11,6 +11,17 @@ module.exports = function processFlags(flags) {
   if (!Array.isArray(define)) {
     define = typeof define !== 'undefined' ? [define] : [];
   }
+  if (!Array.isArray(e)) {
+    e = typeof e !== 'undefined' ? [e] : [];
+  }
+  if (!Array.isArray(env)) {
+    env = typeof env !== 'undefined' ? [env] : [];
+  }
+
+  const allEnvs = [...e, ...env]
+    .map(x => x.split(','))
+    .reduce((a, x) => [...a, ...x])
+    .reduce((a, x) => ({ ...a, [x]: process.env[x] }), {});
 
   const allDefines = [...d, ...define];
 
@@ -32,6 +43,6 @@ module.exports = function processFlags(flags) {
     .reduce((a, { k, v }) => ({ ...a, [k]: v }), {});
 
   return {
-    define: defineVars,
+    define: { ...defineVars, ...allEnvs },
   };
 };

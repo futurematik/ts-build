@@ -7,7 +7,7 @@ const getPackages = require('./getPackages');
 const findTsc = require('./findTsc');
 
 const buildTsConfigFileName = 'tsconfig.build.json';
-const buildConstantsPackage = '@ts-build/build-constants';
+const constantsFilePath = 'constants.build.json';
 
 /**
  * Run the program.
@@ -38,31 +38,7 @@ module.exports = async function main(tsBuildFlags, folders, tscArgs) {
     let constantsCfg = {};
 
     if (hasDefines) {
-      if (
-        !pkg.tsConfig.compilerOptions.baseUrl ||
-        !pkg.tsConfig.compilerOptions.paths ||
-        !pkg.tsConfig.compilerOptions.paths[buildConstantsPackage]
-      ) {
-        console.log(
-          `warning: skipping defines for package ${pkg.packageJson.name}`,
-        );
-      } else {
-        const constantsFilePath = changeExt(
-          path.resolve(
-            pkg.basePath,
-            pkg.tsConfig.compilerOptions.baseUrl,
-            pkg.tsConfig.compilerOptions.paths[buildConstantsPackage][0],
-          ),
-          '.build.ts',
-        );
-        constantsCfg = {
-          paths: {
-            ...pkg.tsConfig.compilerOptions.paths,
-            [buildConstantsPackage]: [constantsFilePath],
-          },
-        };
-        writeConstants(constantsFilePath, options.define);
-      }
+      writeFile(path.join(pkg.basePath, constantsFilePath), options.define);
     }
 
     pkg.buildTsConfig = {
@@ -109,17 +85,6 @@ module.exports = async function main(tsBuildFlags, folders, tscArgs) {
   process.exit(exitCode);
 };
 
-function writeConstants(filename, constants) {
-  let content = '';
-  for (const k in constants) {
-    content = `export const ${k} = ${constants[k]};\n`;
-  }
-  console.log(
-    `writing constants file ${path.relative(process.cwd(), filename)}`,
-  );
-  fs.writeFileSync(filename, content);
-}
-
 function writeFile(path, obj) {
   fs.writeFileSync(path, JSON.stringify(obj, null, 2));
 }
@@ -131,9 +96,4 @@ function runCmd(command, args) {
     proc.on('exit', resolve);
     proc.on('error', reject);
   });
-}
-
-function changeExt(filePath, ext) {
-  const pos = filePath.lastIndexOf('.');
-  return filePath.substring(0, pos < 0 ? filePath.length : pos) + ext;
 }
