@@ -12,7 +12,17 @@ function getPackages(pathOrPaths, child) {
 
     if (fs.existsSync(packageJsonPath)) {
       const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-      const tsConfigPath = path.join(basePath, 'tsconfig.json');
+
+      const tsbuildconfigPath = path.join(basePath, 'tsbuildconfig.json');
+      const tsbuildconfig = fs.existsSync(tsbuildconfigPath)
+        ? JSON.parse(fs.readFileSync(tsbuildconfigPath, 'utf8'))
+        : {};
+
+      const tsConfigPath = path.join(
+        basePath,
+        tsbuildconfig.tsconfig || 'tsconfig.json',
+      );
+
       const tsConfig = fs.existsSync(tsConfigPath)
         ? JSON.parse(fs.readFileSync(tsConfigPath, 'utf8'))
         : {};
