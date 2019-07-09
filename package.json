@@ -1,6 +1,6 @@
 {
   "name": "@fmtk/ts-build",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Builds typescript packages",
   "main": "index.js",
   "license": "MIT",
